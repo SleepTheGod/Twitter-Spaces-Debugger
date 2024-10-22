@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Twitter Spaces Debugger</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Twitter Spaces Debugger</h1>
+        <button id="start-debug">Start Debugging</button>
+        <div id="results"></div>
+    </div>
+    <script>
+        document.getElementById('start-debug').onclick = function() {
+            document.getElementById('results').innerHTML = 'Debugging...';
+            fetch('/start_debug', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let output = '<h2>Requests:</h2><pre>' + JSON.stringify(data.requests, null, 2) + '</pre>';
+                output += '<h2>Responses:</h2><pre>' + JSON.stringify(data.responses, null, 2) + '</pre>';
+                output += '<h2>Console Logs:</h2><pre>' + JSON.stringify(data.console_logs, null, 2) + '</pre>';
+                document.getElementById('results').innerHTML = output;
+            })
+            .catch(error => {
+                document.getElementById('results').innerHTML = 'Error: ' + error;
+            });
+        };
+    </script>
+</body>
+</html>
